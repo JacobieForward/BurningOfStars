@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 77a911f458224a04782457568191500a, type: 3}
+  m_Name: TestMachineGun
+  m_EditorClassIdentifier: 
+  sprite: {fileID: 3924864425337266819, guid: a6949d6a51dc19246bc6f788435fdbdd, type: 3}
+  projectile: {fileID: 9191863252564647497, guid: 2559a810b4f857549bc94a1740b7bbcf,
+    type: 3}
+  fireRate: 0.01
+  spread: 12
+  weaponPickupPrefab: {fileID: 5557958104643903289, guid: 9f6eb973af6a5b54dad2528fea3dea50,
+    type: 3}
