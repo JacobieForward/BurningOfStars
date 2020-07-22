@@ -7,34 +7,33 @@ public class Projectile : MonoBehaviour {
     [SerializeField] float speed;
     [SerializeField] float damage;
 
-    float whenInstantiated;
+    //float whenInstantiated;
 
     private void Awake() {
-        whenInstantiated = Time.timeSinceLevelLoad;
+        //whenInstantiated = Time.timeSinceLevelLoad;
     }
 
     void Update() {
         transform.position += transform.right * Time.deltaTime * speed;
-        float timeSinceInstantiated = Time.timeSinceLevelLoad - whenInstantiated;
-        if (timeSinceInstantiated > 1.5f) {
-            Destroy(gameObject);
-        }
+        //float timeSinceInstantiated = Time.timeSinceLevelLoad - whenInstantiated;
+        //if (timeSinceInstantiated > 1.5f) {
+        //    Destroy(gameObject);
+        //}
     }
 
     void OnBecameInvisible() {
         Destroy(gameObject);
     }
-
-    private void OnTriggerEnter2D(Collider2D other) {
-        // Doing a GetComponent every collision might be resource intensive
-        EnemyStats enemyScript = other.GetComponent<EnemyStats>();
-        if (enemyScript != null) {
-            enemyScript.ProjectileImpact(this);
+    
+    private void OnCollisionEnter2D(Collision2D other) {
+        Stats collisionScript = other.gameObject.GetComponent<Stats>();
+        if (collisionScript != null) {
+            collisionScript.ProjectileImpact(this);
             Destroy(gameObject);
         }
-    }
-
-    private void OnCollisionEnter2D(Collision2D collision) {
+        if (other.gameObject.tag == "Projectile") {
+            return;
+        }
         Destroy(gameObject);
     }
 

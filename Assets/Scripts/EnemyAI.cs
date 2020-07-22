@@ -7,16 +7,20 @@ public class EnemyAI : MonoBehaviour {
     // TODO: During polish/refactor potentially take a lot of the utility functions out of here and put them in a script that many scripts can use or inherit from
     [SerializeField] BehaviorType type;
     [SerializeField] float attackRange;
+    [SerializeField] float moveSpeed;
     [SerializeField] float turnSpeed;
     [SerializeField] Weapon currentWeapon;
 
     [Range(0, 360)]
     public float firingArc;
     [SerializeField] bool playerInSight;
-    [SerializeField] Vector3 personalLastSighting;
+    [SerializeField] Vector3 lastKnownTargetPosition;
 
     GameObject weaponHolder;
     GameObject target = null;
+    bool pursuingPlayer = false;
+
+    Shooting shooting;
 
     // TODO: During polish, as with InteractableObject, try to find a more elegant solution instead of lazy enum switch implementation.
     enum BehaviorType {
@@ -28,23 +32,11 @@ public class EnemyAI : MonoBehaviour {
     }
 
     void Awake() {
-        // TODO: Copy pasted code from PlayerShooting, that just feels wrong, should have an equipment system usable by both
-        weaponHolder = gameObject.transform.GetChild(0).gameObject;
-        EquipWeapon(currentWeapon);
-    }
-
-    // TODO: Copy pasted code from PlayerShooting, that just feels wrong, should have an equipment system usable by both
-    public void EquipWeapon(Weapon newWeapon) {
-        if (newWeapon == null) {
-            return;
-        }
-        currentWeapon = newWeapon;
-        // TODO: During polish possibly just make sprites visible/invisible rather than removing and instantiating, should be more efficient
-        try { Destroy(weaponHolder.transform.GetChild(0).gameObject); } catch (UnityException e) { } // First remove old sprite
-        GameObject newWeaponSprite = Instantiate(currentWeapon.GetSprite(), weaponHolder.transform); // Instantiate new sprite
+        shooting = GetComponent<Shooting>();
     }
 
     void Update() {
+        // TODO: Rethink the architecture of the AI, possibly add a state machine or implement decision trees and make all methods called here individualistic
         switch (type) {
             case BehaviorType.Dummy:
                 DoNothing();
@@ -55,6 +47,11 @@ public class EnemyAI : MonoBehaviour {
                 Fire();
                 break;
             case BehaviorType.Pursuer:
+                LookForClosestVisibleTargetInRange();
+                RotateToTarget();
+                IfNoTargetRotateToLastTargetPosition();
+                IfNoTargetMoveToLastTargetPosition();
+                Fire();
                 break;
             case BehaviorType.Patroller:
                 break;
@@ -72,6 +69,14 @@ public class EnemyAI : MonoBehaviour {
         List<GameObject> newTargets = GetTargetsInRange();
         List<GameObject> newVisibleTargets = GetVisibleGameObjectsFromList(newTargets);
         GameObject closestVisibleTarget = GetClosestGameObjectFromList(newVisibleTargets);
+        if (closestVisibleTarget == null && target != null) {
+            lastKnownTargetPosition = target.transform.position;
+            target = null;
+            pursuingPlayer = true;
+        }
+        if (closestVisibleTarget != null) {
+            pursuingPlayer = false;
+        }
         target = closestVisibleTarget;
     }
 
@@ -132,12 +137,29 @@ public class EnemyAI : MonoBehaviour {
         transform.rotation = Quaternion.RotateTowards(transform.rotation, newRotation, Time.deltaTime * turnSpeed);
     }
 
+    void IfNoTargetRotateToLastTargetPosition() {
+        if (target == null && pursuingPlayer) {
+            //Vector2 targetDirection = lastKnownTargetPosition - transform.position;
+            //Vector2 newDirection = Vector3.RotateTowards(transform.forward, targetDirection, turnSpeed * Time.deltaTime, 0.0f);
+            Vector2 newDirection = new Vector2(lastKnownTargetPosition.x - transform.position.x, lastKnownTargetPosition.y - transform.position.y);
+            transform.right = newDirection;
+        }
+    }
+
+    void IfNoTargetMoveToLastTargetPosition() {
+        if (target == null && pursuingPlayer) {
+            MoveToPosition(lastKnownTargetPosition);
+        }
+    }
+
     void Fire() {
         if (target == null) {
             return;
         }
         if (CheckIfTargetInFiringArc()) {
-            print("Firing");
+            if (shooting.AbleToShoot()) {
+                shooting.ShootPrimaryWeapon();
+            }
         }
     }
 
@@ -149,12 +171,14 @@ public class EnemyAI : MonoBehaviour {
     }
 
     bool CheckIfTargetInFiringArc() {
-        // NOTE: Only works for angles around 90 degrees or less, dont use more than 80, maybe add a range to the firingArc variable
         Vector3 dirToTarget = transform.position - target.transform.position;
-        // Minus 90 because unity starts with 90 instead of 0 for degrees
-        if (((Vector2.Angle(transform.up, dirToTarget) - 90) < firingArc / 2)) {
+        if (Mathf.Abs((Vector2.Angle(transform.right, dirToTarget) - 180)) < Mathf.Abs(firingArc / 2)) {
             return true;
         }
         return false;
+    }
+
+    void MoveToPosition(Vector3 newPosition) {
+        transform.position = Vector3.MoveTowards(transform.position, newPosition, moveSpeed * Time.deltaTime);
     }
 }

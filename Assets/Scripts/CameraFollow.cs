@@ -8,6 +8,10 @@ public class CameraFollow : MonoBehaviour {
     Vector3 cameraOffset = new Vector3(0, 0, -2);
 
     void LateUpdate() {
-        this.transform.position = target.position + cameraOffset;
+        try {
+            this.transform.position = target.position + cameraOffset;
+        } catch (MissingReferenceException e) {
+            print("Player object is destroyed." + e.ToString());
+        }
     }
 }

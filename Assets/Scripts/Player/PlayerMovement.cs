@@ -25,8 +25,8 @@ public class PlayerMovement : MonoBehaviour {
                 inputVertical /= 2;
             }
             // Movement relative to rotation
-            transform.position += transform.right * inputVertical * Time.deltaTime * movementSpeed;
-            transform.position += -transform.up * inputHorizontal * Time.deltaTime * movementSpeed;
+            transform.position += transform.up * inputVertical * Time.deltaTime * movementSpeed;
+            transform.position += -transform.right * inputHorizontal * Time.deltaTime * movementSpeed;
         } else {
             // Absolute movement
             transform.Translate(Vector3.up * inputVertical * Time.deltaTime * movementSpeed, Space.World);

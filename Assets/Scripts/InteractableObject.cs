@@ -21,11 +21,14 @@ public class InteractableObject : MonoBehaviour {
                 print("No weapon scriptable object on weapon pickup InteractableObject component.");
                 return;
             }
-            PlayerShooting playerShootingScript = GameObject.FindWithTag("Player").GetComponent<PlayerShooting>();
-            Weapon playerWeaponBeforePickup = playerShootingScript.GetCurrentWeapon();
-            playerShootingScript.EquipWeapon(weapon);
-            if (playerWeaponBeforePickup != null) {
+            Equipment playerEquipmentScript = GameObject.FindWithTag("Player").GetComponent<Equipment>();
+            Weapon playerWeaponBeforePickup = playerEquipmentScript.GetCurrentWeapon();
+            Weapon playerOffHandWeaponBeforePickup = playerEquipmentScript.GetOffHandWeapon();
+            playerEquipmentScript.EquipWeapon(weapon);
+            if (playerEquipmentScript.ShouldPickupSwapWithCurrentWeapon(playerWeaponBeforePickup, playerOffHandWeaponBeforePickup)) {
                 SwapWeaponPickupWithPlayerWeapon(playerWeaponBeforePickup);
+            } else {
+                Destroy(gameObject);
             }
         } else if(type == InteractableType.Door) {
 
