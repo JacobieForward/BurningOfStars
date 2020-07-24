@@ -17,5 +17,6 @@ MonoBehaviour:
     type: 3}
   fireRate: 0.2
   spread: 3
+  numberSpawned: 1
   weaponPickupPrefab: {fileID: 4426578583700388261, guid: 7bc5edb74e0710347b451b048b65377e,
     type: 3}

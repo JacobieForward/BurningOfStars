@@ -6,24 +6,25 @@ using UnityEngine;
 public class Projectile : MonoBehaviour {
     [SerializeField] float speed;
     [SerializeField] float damage;
+    [SerializeField] float projectileLife;
 
-    //float whenInstantiated;
+    float whenInstantiated;
 
     private void Awake() {
-        //whenInstantiated = Time.timeSinceLevelLoad;
+        whenInstantiated = Time.timeSinceLevelLoad;
     }
 
     void Update() {
         transform.position += transform.right * Time.deltaTime * speed;
-        //float timeSinceInstantiated = Time.timeSinceLevelLoad - whenInstantiated;
-        //if (timeSinceInstantiated > 1.5f) {
-        //    Destroy(gameObject);
-        //}
+        float timeSinceInstantiated = Time.timeSinceLevelLoad - whenInstantiated;
+        if (projectileLife > 0 && timeSinceInstantiated > projectileLife) {
+            Destroy(gameObject);
+        }
     }
 
-    void OnBecameInvisible() {
-        Destroy(gameObject);
-    }
+    //void OnBecameInvisible() {
+    //    Destroy(gameObject);
+    //}
     
     private void OnCollisionEnter2D(Collision2D other) {
         Stats collisionScript = other.gameObject.GetComponent<Stats>();
@@ -32,6 +33,7 @@ public class Projectile : MonoBehaviour {
             Destroy(gameObject);
         }
         if (other.gameObject.tag == "Projectile") {
+            Physics2D.IgnoreCollision(other.gameObject.GetComponent<Collider2D>(), GetComponent<Collider2D>());
             return;
         }
         Destroy(gameObject);
