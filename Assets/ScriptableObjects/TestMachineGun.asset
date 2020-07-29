@@ -15,8 +15,8 @@ MonoBehaviour:
   sprite: {fileID: 3924864425337266819, guid: a6949d6a51dc19246bc6f788435fdbdd, type: 3}
   projectile: {fileID: 9191863252564647497, guid: 2559a810b4f857549bc94a1740b7bbcf,
     type: 3}
-  fireRate: 0.01
-  spread: 12
+  fireRate: 0.05
+  spread: 15
   numberSpawned: 1
   weaponPickupPrefab: {fileID: 5557958104643903289, guid: 9f6eb973af6a5b54dad2528fea3dea50,
     type: 3}

@@ -5,7 +5,6 @@ using UnityEngine;
 public class Equipment : MonoBehaviour {
     [SerializeField] Weapon currentWeapon;
     [SerializeField] Weapon offhandWeapon;
-    // [SerializeField] 
 
     GameObject weaponHolder;
 

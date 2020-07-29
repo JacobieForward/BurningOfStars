@@ -35,8 +35,10 @@ public class PlayerMovement : MonoBehaviour {
     }
 
     void InputForRotation() {
-        Vector2 direction = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
+        Vector3 direction = Camera.main.ScreenToWorldPoint(Input.mousePosition) - transform.position;
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        // angle - 90 degrees due to weird issue where the angle was offset by 90 and pointed at the x instead of the y axis
+        angle -= 90f;
         Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.forward);
         transform.rotation = Quaternion.Slerp(transform.rotation, rotation, turnSpeed * Time.deltaTime);
     }

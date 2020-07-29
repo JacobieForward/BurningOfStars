@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Pathfinding;
 
+// TODO: If I bother this whole class should be cleaned up and maybe spread throughout multiple classes. At the moment it is straight up spaghetti.
 #pragma warning disable CS0649
 public class EnemyAI : MonoBehaviour {
     // TODO: During polish/refactor potentially take a lot of the utility functions out of here and put them in a script that many scripts can use or inherit from
@@ -14,11 +16,14 @@ public class EnemyAI : MonoBehaviour {
     [Range(0, 360)]
     public float firingArc;
     [SerializeField] bool playerInSight;
-    [SerializeField] Vector3 lastKnownTargetPosition;
+    Transform lastKnownTargetTransform;
+    AIDestinationSetter aiDestinationSetter;
+    [SerializeField] GameObject temporaryWaypoint;
 
     GameObject weaponHolder;
-    GameObject target = null;
-    bool pursuingPlayer = false;
+    [SerializeField] GameObject target = null;
+    GameObject currentWaypoint;
+    // bool pursuingPlayer = false;
 
     Shooting shooting;
 
@@ -27,19 +32,23 @@ public class EnemyAI : MonoBehaviour {
         Dummy, // Stands and does not move or do any actions
         Turret, // Stands still and rotates to track targets, fires at the target
         Pursuer, // Stands still until seeing the player, then rotates and tracks and fires, if the target goes out of range then follow and fire when in range
+        Seeker, // Immediately pursues the player for good
         Patroller, // Patrols back and forth on a path, upon seeing a target then assume pursuer behavior
         StrictPatroller // Patrols back and forth on a path, upon seeing a target assume turret behavior, when no target in sight resume patrolling
     }
 
     void Awake() {
         shooting = GetComponent<Shooting>();
+        aiDestinationSetter = GetComponent<AIDestinationSetter>();
+        if (type == BehaviorType.Seeker) {
+            aiDestinationSetter.target = GameObject.FindWithTag("Player").transform;
+        }
     }
 
     void Update() {
         // TODO: Rethink the architecture of the AI, possibly add a state machine or implement decision trees and make all methods called here individualistic
         switch (type) {
             case BehaviorType.Dummy:
-                DoNothing();
                 break;
             case BehaviorType.Turret:
                 LookForClosestVisibleTargetInRange();
@@ -49,8 +58,14 @@ public class EnemyAI : MonoBehaviour {
             case BehaviorType.Pursuer:
                 LookForClosestVisibleTargetInRange();
                 RotateToTarget();
-                IfNoTargetRotateToLastTargetPosition();
-                IfNoTargetMoveToLastTargetPosition();
+                //IfNoTargetRotateToLastTargetPosition();
+                //IfNoTargetMoveToLastTargetPosition();
+                Fire();
+                break;
+            case BehaviorType.Seeker:
+                // Note in awake Seeker types have the player's transform added so outside of these methods they will use the A* pathfinding Seeker script to go towards the player
+                LookForClosestVisibleTargetInRange();
+                RotateToTarget();
                 Fire();
                 break;
             case BehaviorType.Patroller:
@@ -60,22 +75,24 @@ public class EnemyAI : MonoBehaviour {
         }
     }
 
-    void DoNothing() {
-        // EXPERIMENTAL: This method exists solely for english syntax readability
-        // TODO: ReEvaluate in refactor/polish
-    }
-
     void LookForClosestVisibleTargetInRange() {
         List<GameObject> newTargets = GetTargetsInRange();
         List<GameObject> newVisibleTargets = GetVisibleGameObjectsFromList(newTargets);
         GameObject closestVisibleTarget = GetClosestGameObjectFromList(newVisibleTargets);
         if (closestVisibleTarget == null && target != null) {
-            lastKnownTargetPosition = target.transform.position;
-            target = null;
-            pursuingPlayer = true;
+            //lastKnownTargetTransform = target.transform;
+            //pursuingPlayer = true;
+            if (type == BehaviorType.Pursuer) {
+                GameObject newWaypoint = Instantiate(temporaryWaypoint, target.transform.position, target.transform.rotation);
+                aiDestinationSetter.target = newWaypoint.transform;
+                Destroy(currentWaypoint);
+                currentWaypoint = newWaypoint;
+            }
+            //target = null;
         }
-        if (closestVisibleTarget != null) {
-            pursuingPlayer = false;
+        if (closestVisibleTarget != null && target != null && type == BehaviorType.Pursuer) {
+            //pursuingPlayer = false;
+            aiDestinationSetter.target = null;
         }
         target = closestVisibleTarget;
     }
@@ -104,7 +121,7 @@ public class EnemyAI : MonoBehaviour {
         }
         foreach (GameObject gameObject in listOfGameObjects) {
             Vector2 heading = gameObject.transform.position - transform.position;
-            RaycastHit2D hit = Physics2D.Raycast(transform.position, heading);
+            RaycastHit2D hit = Physics2D.Raycast(transform.GetChild(0).GetChild(0).position, heading);
             if (hit.collider.gameObject.tag == "Player") {
                 visibleGameObjectsFromList.Add(gameObject);
             }
@@ -131,25 +148,21 @@ public class EnemyAI : MonoBehaviour {
         if (target == null) {
             return;
         }
-        Vector3 dir = target.transform.position - transform.position;
-        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-        Quaternion newRotation = Quaternion.AngleAxis(angle, Vector3.forward);
-        transform.rotation = Quaternion.RotateTowards(transform.rotation, newRotation, Time.deltaTime * turnSpeed);
+        RotateToLookAtPosition(target.transform.position);
     }
 
+    // DEPRECATED
     void IfNoTargetRotateToLastTargetPosition() {
-        if (target == null && pursuingPlayer) {
-            //Vector2 targetDirection = lastKnownTargetPosition - transform.position;
-            //Vector2 newDirection = Vector3.RotateTowards(transform.forward, targetDirection, turnSpeed * Time.deltaTime, 0.0f);
-            Vector2 newDirection = new Vector2(lastKnownTargetPosition.x - transform.position.x, lastKnownTargetPosition.y - transform.position.y);
-            transform.right = newDirection;
-        }
+        /*if (target == null && pursuingPlayer) {
+            RotateToLookAtPosition(lastKnownTargetTransform.position);
+        }*/
     }
 
+    // DEPRECATED
     void IfNoTargetMoveToLastTargetPosition() {
-        if (target == null && pursuingPlayer) {
-            MoveToPosition(lastKnownTargetPosition);
-        }
+        /*if (target == null && pursuingPlayer) {
+            MoveToPosition(lastKnownTargetTransform.position);
+        }*/
     }
 
     void Fire() {
@@ -172,7 +185,8 @@ public class EnemyAI : MonoBehaviour {
 
     bool CheckIfTargetInFiringArc() {
         Vector3 dirToTarget = transform.position - target.transform.position;
-        if (Mathf.Abs((Vector2.Angle(transform.right, dirToTarget) - 180)) < Mathf.Abs(firingArc / 2)) {
+        // -90 due to needing the object to point at and fire at the y (green) axis
+        if (Mathf.Abs((Vector2.Angle(transform.right, dirToTarget) - 90)) < Mathf.Abs(firingArc / 2)) {
             return true;
         }
         return false;
@@ -180,5 +194,14 @@ public class EnemyAI : MonoBehaviour {
 
     void MoveToPosition(Vector3 newPosition) {
         transform.position = Vector3.MoveTowards(transform.position, newPosition, moveSpeed * Time.deltaTime);
+    }
+    
+    void RotateToLookAtPosition(Vector3 positionToLookAt) {
+        Vector3 dir = positionToLookAt - transform.position;
+        float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+        // angle - 90 so the enemy rotates along the y axis
+        angle -= 90.0f;
+        Quaternion newRotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, newRotation, Time.deltaTime * turnSpeed);
     }
 }
