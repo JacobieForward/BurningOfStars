@@ -18,5 +18,6 @@ MonoBehaviour:
   fireRate: 1
   spread: 0
   numberSpawned: 1
+  maxAmmunition: 10
   weaponPickupPrefab: {fileID: 1056132855465098648, guid: 09c5a4bd050f50e479e0c91c0eede59f,
     type: 3}

@@ -86,10 +86,11 @@ SpriteRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 9dfc825aed78fcd4ba02077103263b40, type: 2}
+  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -179,6 +180,7 @@ MonoBehaviour:
   playerInSight: 0
   temporaryWaypoint: {fileID: 2589608359723486539, guid: 313b49ddd8de9f548b629bd976c69a58,
     type: 3}
+  target: {fileID: 0}
 --- !u!114 &7466363641462534141
 MonoBehaviour:
   m_ObjectHideFlags: 0

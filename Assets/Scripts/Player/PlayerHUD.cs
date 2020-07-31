@@ -10,18 +10,21 @@ public class PlayerHUD : MonoBehaviour {
     Equipment playerEquipment;
 
     Slider playerHealthBar;
+    Text playerAmmunitionCounter;
 
     void Awake() {
         playerStats = GameObject.FindGameObjectWithTag("Player").GetComponent<Stats>();
         playerEquipment = GameObject.FindGameObjectWithTag("Player").GetComponent<Equipment>();
 
         playerHealthBar = GameObject.Find("HealthBar").GetComponent<Slider>();
+        playerAmmunitionCounter = GameObject.Find("CurrentWeaponAmmunitionText").GetComponent<Text>();
     }
 
     void Update() {
         try {
             playerHealthBar.maxValue = playerStats.GetMaxHealth();
             playerHealthBar.value = playerStats.GetCurrentHealth();
+            playerAmmunitionCounter.text = playerEquipment.GetCurrentWeaponAmmunition().ToString();
             // TODO: Get rid of all this dirty try catching and just attach a script to the health bars to set their gameObject names automatically?
             // Then again how would we know the script was always attached?
         } catch (NullReferenceException) {

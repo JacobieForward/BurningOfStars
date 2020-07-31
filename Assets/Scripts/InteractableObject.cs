@@ -10,9 +10,17 @@ public class InteractableObject : MonoBehaviour {
     [SerializeField] InteractableType type;
     [SerializeField] Weapon weapon;
 
+    [SerializeField] int ammunition;
+
     enum InteractableType {
         WeaponPickup,
         Door
+    }
+
+    void Awake() {
+        if (weapon != null) {
+            ammunition = weapon.GetMaxAmmunition();
+        }
     }
 
     public void Interact() {
@@ -24,19 +32,26 @@ public class InteractableObject : MonoBehaviour {
             Equipment playerEquipmentScript = GameObject.FindWithTag("Player").GetComponent<Equipment>();
             Weapon playerWeaponBeforePickup = playerEquipmentScript.GetCurrentWeapon();
             Weapon playerOffHandWeaponBeforePickup = playerEquipmentScript.GetOffHandWeapon();
-            playerEquipmentScript.EquipWeapon(weapon);
             if (playerEquipmentScript.ShouldPickupSwapWithCurrentWeapon(playerWeaponBeforePickup, playerOffHandWeaponBeforePickup)) {
                 SwapWeaponPickupWithPlayerWeapon(playerWeaponBeforePickup);
             } else {
                 Destroy(gameObject);
             }
+            playerEquipmentScript.EquipWeapon(weapon);
+            playerEquipmentScript.SetCurrentWeaponAmmunition(ammunition);
         } else if(type == InteractableType.Door) {
 
         }
     }
 
     void SwapWeaponPickupWithPlayerWeapon(Weapon weaponToSwapWith) {
-        Instantiate(weaponToSwapWith.GetWeaponPickupPrefab(), gameObject.transform.position, gameObject.transform.rotation);
+        Equipment playerEquipmentScript = GameObject.FindWithTag("Player").GetComponent<Equipment>();
+        GameObject newPickup = Instantiate(weaponToSwapWith.GetWeaponPickupPrefab(), gameObject.transform.position, gameObject.transform.rotation);
+        newPickup.GetComponent<InteractableObject>().SetAmmunition(playerEquipmentScript.GetCurrentWeaponAmmunition());
         Destroy(gameObject);
+    }
+
+    public void SetAmmunition(int ammunitionAmount) {
+        ammunition = ammunitionAmount;
     }
 }

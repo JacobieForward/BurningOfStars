@@ -6,6 +6,9 @@ public class Equipment : MonoBehaviour {
     [SerializeField] Weapon currentWeapon;
     [SerializeField] Weapon offhandWeapon;
 
+    [SerializeField] int currentWeaponAmmunition; // Ammunition should really be stored in an instance object but that was too much refactor for my taste, maybe another time
+    [SerializeField] int offhandWeaponAmmunition;
+
     GameObject weaponHolder;
 
     void Awake() {
@@ -14,7 +17,12 @@ public class Equipment : MonoBehaviour {
     }
 
     void InitializeWeapons() {
+        // Assumes the starting weapon to never be null
         GameObject newWeaponSprite = Instantiate(currentWeapon.GetSprite(), weaponHolder.transform); // Instantiate new sprite
+        currentWeaponAmmunition = currentWeapon.GetMaxAmmunition();
+        if (offhandWeapon != null) {
+            offhandWeaponAmmunition = offhandWeapon.GetMaxAmmunition();
+        }
     }
 
     public void EquipWeapon(Weapon newWeapon) {
@@ -24,10 +32,13 @@ public class Equipment : MonoBehaviour {
         // Assumes currentWeapon to never be null
         if (currentWeapon != null && offhandWeapon == null) {
             offhandWeapon = currentWeapon;
+            offhandWeaponAmmunition = currentWeaponAmmunition;
             currentWeapon = newWeapon;
+            currentWeaponAmmunition = newWeapon.GetMaxAmmunition();
             SwapCurrentWeaponSprite(newWeapon);
         } else {
             currentWeapon = newWeapon;
+            currentWeaponAmmunition = newWeapon.GetMaxAmmunition();
             SwapCurrentWeaponSprite(newWeapon);
         }
     }
@@ -51,8 +62,11 @@ public class Equipment : MonoBehaviour {
             return;
         }
         Weapon temp = currentWeapon;
+        int tempAmmunition = currentWeaponAmmunition;
         currentWeapon = offhandWeapon;
         offhandWeapon = temp;
+        currentWeaponAmmunition = offhandWeaponAmmunition;
+        offhandWeaponAmmunition = tempAmmunition;
 
         SwapCurrentWeaponSprite(offhandWeapon);
     }
@@ -62,5 +76,17 @@ public class Equipment : MonoBehaviour {
             return true;
         }
         return false;
+    }
+
+    public int GetCurrentWeaponAmmunition() {
+        return currentWeaponAmmunition;
+    }
+
+    public void SetCurrentWeaponAmmunition(int newWeaponAmmunition) {
+        currentWeaponAmmunition = newWeaponAmmunition;
+    }
+
+    public void UseAmmunition() {
+        currentWeaponAmmunition -= 1;
     }
 }
