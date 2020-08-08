@@ -11,7 +11,6 @@ public class EnemyAI : MonoBehaviour {
     [SerializeField] float attackRange;
     [SerializeField] float moveSpeed;
     [SerializeField] float turnSpeed;
-    [SerializeField] Weapon currentWeapon;
 
     [Range(0, 360)]
     public float firingArc;
@@ -23,7 +22,6 @@ public class EnemyAI : MonoBehaviour {
     GameObject weaponHolder;
     [SerializeField] GameObject target = null;
     GameObject currentWaypoint;
-    // bool pursuingPlayer = false;
 
     Shooting shooting;
 
@@ -88,7 +86,7 @@ public class EnemyAI : MonoBehaviour {
                 Destroy(currentWaypoint);
                 currentWaypoint = newWaypoint;
             }
-            //target = null;
+            target = null;
         }
         if (closestVisibleTarget != null && target != null && type == BehaviorType.Pursuer) {
             //pursuingPlayer = false;

@@ -174,7 +174,7 @@ MonoBehaviour:
   type: 2
   attackRange: 10
   moveSpeed: 0.5
-  turnSpeed: 100
+  turnSpeed: 200
   currentWeapon: {fileID: 11400000, guid: b98e2c3276f216a4a88a57473a8b7645, type: 2}
   firingArc: 45
   playerInSight: 0
@@ -221,6 +221,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentWeapon: {fileID: 11400000, guid: b98e2c3276f216a4a88a57473a8b7645, type: 2}
   offhandWeapon: {fileID: 0}
+  currentWeaponAmmunition: 0
+  offhandWeaponAmmunition: 0
 --- !u!114 &649620974
 MonoBehaviour:
   m_ObjectHideFlags: 0
