@@ -18,7 +18,7 @@ TagManager:
   - 
   - Obstacle
   - Background
-  - 
+  - Actor
   - 
   - 
   - 
@@ -43,4 +43,13 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Background
+    uniqueID: 3239544409
+    locked: 0
+  - name: Pickups
+    uniqueID: 2866341679
+    locked: 0
+  - name: Actors
+    uniqueID: 1079028991
     locked: 0

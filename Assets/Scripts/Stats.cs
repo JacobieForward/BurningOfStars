@@ -9,6 +9,8 @@ public class Stats : MonoBehaviour {
     [SerializeField] GameObject deathParticles;
     [SerializeField] GameObject deathSprite;
 
+    [SerializeField] List<GameObject> bodyPieces; 
+
     Equipment equipment;
     void Awake() {
         equipment = GetComponent<Equipment>();
@@ -37,6 +39,7 @@ public class Stats : MonoBehaviour {
         if (deathSprite != null) {
             Instantiate(deathSprite, gameObject.transform.position, gameObject.transform.rotation);
         }
+        SpawnBodyPieces();
         Destroy(gameObject);
     }
 
@@ -46,5 +49,27 @@ public class Stats : MonoBehaviour {
 
     public float GetCurrentHealth() {
         return currentHealth;
+    }
+
+    void SpawnBodyPieces() {
+        int numberOfBodyPieces = Random.Range(1, bodyPieces.Count);
+
+        if (bodyPieces.Count != 0) {
+            List<GameObject> tempBodyPieces = bodyPieces;
+            GameObject piece = tempBodyPieces[0];
+            for (int i = 0; i < numberOfBodyPieces; i++) {
+                if (tempBodyPieces.Count == 0) {
+                    piece = bodyPieces[0];
+                } else {
+                    piece = tempBodyPieces[Random.Range(0, tempBodyPieces.Count)];
+                }
+                if (piece != null) {
+                    Instantiate(piece, transform.position, transform.rotation);
+                }
+                tempBodyPieces.Remove(piece);
+            }
+        } else {
+            return;
+        }
     }
 }

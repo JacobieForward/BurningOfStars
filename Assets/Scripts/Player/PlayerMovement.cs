@@ -11,6 +11,11 @@ public class PlayerMovement : MonoBehaviour {
     void Update() {
         InputForMovement();
         InputForRotation();
+
+        // TODO: Replace with UI menu
+        if (Input.GetKey(KeyCode.Escape)) {
+            Application.Quit();
+        }
     }
 
     void InputForMovement() {

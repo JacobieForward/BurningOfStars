@@ -32,7 +32,8 @@ public class Projectile : MonoBehaviour {
             collisionScript.ProjectileImpact(this);
             Destroy(gameObject);
         }
-        if (other.gameObject.tag == "Projectile") {
+        // TODO: Just use the unity Physics2D layer collision matrix for this in Project Settings > Physics2D
+        if (other.gameObject.tag == "Projectile" || other.gameObject.tag == "ProjectileIgnoreObject") {
             Physics2D.IgnoreCollision(other.gameObject.GetComponent<Collider2D>(), GetComponent<Collider2D>());
             return;
         }

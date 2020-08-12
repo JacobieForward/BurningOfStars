@@ -20,7 +20,7 @@ public class EnemyAI : MonoBehaviour {
     [SerializeField] GameObject temporaryWaypoint;
 
     GameObject weaponHolder;
-    [SerializeField] GameObject target = null;
+    [SerializeField] GameObject target;
     GameObject currentWaypoint;
 
     Shooting shooting;
@@ -56,8 +56,7 @@ public class EnemyAI : MonoBehaviour {
             case BehaviorType.Pursuer:
                 LookForClosestVisibleTargetInRange();
                 RotateToTarget();
-                //IfNoTargetRotateToLastTargetPosition();
-                //IfNoTargetMoveToLastTargetPosition();
+                IfNoTargetMoveToLastTargetPosition();
                 Fire();
                 break;
             case BehaviorType.Seeker:
@@ -77,7 +76,16 @@ public class EnemyAI : MonoBehaviour {
         List<GameObject> newTargets = GetTargetsInRange();
         List<GameObject> newVisibleTargets = GetVisibleGameObjectsFromList(newTargets);
         GameObject closestVisibleTarget = GetClosestGameObjectFromList(newVisibleTargets);
+
         if (closestVisibleTarget == null && target != null) {
+            lastKnownTargetTransform = target.transform;
+            if (currentWaypoint != null) {
+                Destroy(currentWaypoint);
+            }
+        }
+
+        target = closestVisibleTarget;
+        /*if (closestVisibleTarget == null && target != null) {
             //lastKnownTargetTransform = target.transform;
             //pursuingPlayer = true;
             if (type == BehaviorType.Pursuer) {
@@ -91,8 +99,8 @@ public class EnemyAI : MonoBehaviour {
         if (closestVisibleTarget != null && target != null && type == BehaviorType.Pursuer) {
             //pursuingPlayer = false;
             aiDestinationSetter.target = null;
-        }
-        target = closestVisibleTarget;
+        }*/
+        
     }
 
     // TODO: Add list/array validation methods for guard clauses to clean up and shorten code
@@ -149,18 +157,17 @@ public class EnemyAI : MonoBehaviour {
         RotateToLookAtPosition(target.transform.position);
     }
 
-    // DEPRECATED
-    void IfNoTargetRotateToLastTargetPosition() {
-        /*if (target == null && pursuingPlayer) {
-            RotateToLookAtPosition(lastKnownTargetTransform.position);
-        }*/
-    }
-
-    // DEPRECATED
     void IfNoTargetMoveToLastTargetPosition() {
-        /*if (target == null && pursuingPlayer) {
-            MoveToPosition(lastKnownTargetTransform.position);
-        }*/
+        if (target != null || lastKnownTargetTransform == null) {
+            aiDestinationSetter.target = null;
+            return;
+        }
+        if (currentWaypoint == null) {
+            GameObject newWaypoint = Instantiate(temporaryWaypoint, lastKnownTargetTransform.transform.position, lastKnownTargetTransform.transform.rotation);
+            aiDestinationSetter.target = newWaypoint.transform;
+            Destroy(currentWaypoint);
+            currentWaypoint = newWaypoint;
+        }
     }
 
     void Fire() {

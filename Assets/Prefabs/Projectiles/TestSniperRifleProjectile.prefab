@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6803121288745654440}
   - component: {fileID: 6803121288745654485}
   - component: {fileID: 5871675358269193399}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: TestSniperRifleProjectile
   m_TagString: Projectile
   m_Icon: {fileID: 0}
