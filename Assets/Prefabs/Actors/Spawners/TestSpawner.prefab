@@ -103,6 +103,9 @@ MonoBehaviour:
   currentHealth: 0
   deathParticles: {fileID: 0}
   deathSprite: {fileID: 0}
+  healthPickupDrop: {fileID: 0}
+  chanceToDropHealthPickup: 0
+  bodyPieces: []
 --- !u!114 &633587633498561002
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -116,7 +119,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnTime: 4
-  enemyToSpawn: {fileID: 5718062176196151302, guid: fd035eb2c57cb8f4f811afa90d686265,
+  enemyToSpawn: {fileID: 5991290068070007530, guid: 46c1163f03f5ebd4d81c192fdbe6301d,
     type: 3}
 --- !u!61 &633587633498561001
 BoxCollider2D:

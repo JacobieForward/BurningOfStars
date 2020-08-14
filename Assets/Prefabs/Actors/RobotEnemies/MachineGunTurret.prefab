@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 2212529094747549625}
   - component: {fileID: 2212529095017543542}
   - component: {fileID: 6165140784928295354}
-  m_Layer: 2
+  m_Layer: 10
   m_Name: MachineGunTurret
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -175,6 +175,8 @@ MonoBehaviour:
   deathParticles: {fileID: 0}
   deathSprite: {fileID: 1406181763842561809, guid: 9bafffee1160b85478f587a0e5c463b4,
     type: 3}
+  healthPickupDrop: {fileID: 0}
+  chanceToDropHealthPickup: 0
   bodyPieces:
   - {fileID: 8294420976193988445, guid: d754ccfc591aa044d9ad79d055558689, type: 3}
   - {fileID: 5362169604018914355, guid: 16df36572d0710745887a5eea7f40bcd, type: 3}
@@ -204,7 +206,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2212529095532185900}
-  m_Layer: 2
+  m_Layer: 10
   m_Name: WeaponHolder
   m_TagString: Untagged
   m_Icon: {fileID: 0}

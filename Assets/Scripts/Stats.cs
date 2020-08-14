@@ -8,8 +8,11 @@ public class Stats : MonoBehaviour {
     [SerializeField] float currentHealth;
     [SerializeField] GameObject deathParticles;
     [SerializeField] GameObject deathSprite;
+    [SerializeField] GameObject healthPickupDrop;
+    [Range(0.0f, 1.0f)]
+    [SerializeField] float chanceToDropHealthPickup;
 
-    [SerializeField] List<GameObject> bodyPieces; 
+    [SerializeField] List<GameObject> bodyPieces;
 
     Equipment equipment;
     void Awake() {
@@ -40,6 +43,7 @@ public class Stats : MonoBehaviour {
             Instantiate(deathSprite, gameObject.transform.position, gameObject.transform.rotation);
         }
         SpawnBodyPieces();
+        SpawnPickups();
         Destroy(gameObject);
     }
 
@@ -52,24 +56,39 @@ public class Stats : MonoBehaviour {
     }
 
     void SpawnBodyPieces() {
+        if (bodyPieces.Count == 0) {
+            return;
+        }
         int numberOfBodyPieces = Random.Range(1, bodyPieces.Count);
 
-        if (bodyPieces.Count != 0) {
-            List<GameObject> tempBodyPieces = bodyPieces;
-            GameObject piece = tempBodyPieces[0];
-            for (int i = 0; i < numberOfBodyPieces; i++) {
-                if (tempBodyPieces.Count == 0) {
+        List<GameObject> tempBodyPieces = bodyPieces;
+        GameObject piece = tempBodyPieces[0];
+        for (int i = 0; i < numberOfBodyPieces; i++) {
+            if (tempBodyPieces.Count == 0) {
                     piece = bodyPieces[0];
-                } else {
-                    piece = tempBodyPieces[Random.Range(0, tempBodyPieces.Count)];
-                }
-                if (piece != null) {
-                    Instantiate(piece, transform.position, transform.rotation);
-                }
-                tempBodyPieces.Remove(piece);
+            } else {
+                piece = tempBodyPieces[Random.Range(0, tempBodyPieces.Count)];
             }
-        } else {
+            if (piece != null) {
+                Instantiate(piece, transform.position, transform.rotation);
+            }
+            tempBodyPieces.Remove(piece);
+        }
+    }
+    void SpawnPickups() {
+        if (healthPickupDrop == null || chanceToDropHealthPickup == 0.0f) {
             return;
+        }
+        float randomDropNumber = Random.Range(0.0f, 1.0f);
+        if (randomDropNumber <= chanceToDropHealthPickup) {
+            Instantiate(healthPickupDrop, transform.position, transform.rotation);
+        }
+    }
+
+    public void GainHealth(float amountToGain) {
+        currentHealth += amountToGain;
+        if (currentHealth > maxHealth) {
+            currentHealth = maxHealth;
         }
     }
 }

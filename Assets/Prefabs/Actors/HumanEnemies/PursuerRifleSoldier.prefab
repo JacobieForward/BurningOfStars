@@ -19,7 +19,7 @@ GameObject:
   - component: {fileID: 4404406573744422554}
   - component: {fileID: 4404406573744422533}
   - component: {fileID: 5718062176196151303}
-  m_Layer: 2
+  m_Layer: 10
   m_Name: PursuerRifleSoldier
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -164,6 +164,9 @@ MonoBehaviour:
     type: 3}
   deathSprite: {fileID: 5927908127217679451, guid: 295ac46a5aedf9a4c9abf545ddd9fffd,
     type: 3}
+  healthPickupDrop: {fileID: 4236783210092178157, guid: 34672269da791914f9eef78d3487ae75,
+    type: 3}
+  chanceToDropHealthPickup: 0.3
   bodyPieces:
   - {fileID: 6439173495846526208, guid: 88a8fcc8e48b2bb4ab1221fbde344ef8, type: 3}
   - {fileID: 2466551345551277517, guid: fb42c736b2f993940b7105509197e519, type: 3}
@@ -298,7 +301,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6521848179336370717}
-  m_Layer: 2
+  m_Layer: 10
   m_Name: WeaponHolder
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -8,6 +8,8 @@ public class PlayerMovement : MonoBehaviour {
     [SerializeField] float turnSpeed;
     [SerializeField] bool movementRelativeToRotation;
 
+    public bool isSprinting = false;
+
     void Update() {
         InputForMovement();
         InputForRotation();
@@ -22,6 +24,14 @@ public class PlayerMovement : MonoBehaviour {
         float inputHorizontal = Input.GetAxis("Horizontal");
         float inputVertical = Input.GetAxis("Vertical");
 
+        float modifiedMovementSpeed = movementSpeed;
+        if (Input.GetButton("Sprint")) {
+            modifiedMovementSpeed *= 2;
+            isSprinting = true;
+        } else {
+            isSprinting = false;
+        }
+
         if (movementRelativeToRotation) {
             // Strafing is half as fast as regular movement
             inputHorizontal /= 2;
@@ -30,12 +40,12 @@ public class PlayerMovement : MonoBehaviour {
                 inputVertical /= 2;
             }
             // Movement relative to rotation
-            transform.position += transform.up * inputVertical * Time.deltaTime * movementSpeed;
-            transform.position += -transform.right * inputHorizontal * Time.deltaTime * movementSpeed;
+            transform.position += transform.up * inputVertical * Time.deltaTime * modifiedMovementSpeed;
+            transform.position += -transform.right * inputHorizontal * Time.deltaTime * modifiedMovementSpeed;
         } else {
             // Absolute movement
-            transform.Translate(Vector3.up * inputVertical * Time.deltaTime * movementSpeed, Space.World);
-            transform.Translate(Vector3.right * inputHorizontal * Time.deltaTime * movementSpeed, Space.World);
+            transform.Translate(Vector3.up * inputVertical * Time.deltaTime * modifiedMovementSpeed, Space.World);
+            transform.Translate(Vector3.right * inputHorizontal * Time.deltaTime * modifiedMovementSpeed, Space.World);
         }
     }
 

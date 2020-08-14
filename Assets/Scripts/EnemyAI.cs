@@ -85,22 +85,6 @@ public class EnemyAI : MonoBehaviour {
         }
 
         target = closestVisibleTarget;
-        /*if (closestVisibleTarget == null && target != null) {
-            //lastKnownTargetTransform = target.transform;
-            //pursuingPlayer = true;
-            if (type == BehaviorType.Pursuer) {
-                GameObject newWaypoint = Instantiate(temporaryWaypoint, target.transform.position, target.transform.rotation);
-                aiDestinationSetter.target = newWaypoint.transform;
-                Destroy(currentWaypoint);
-                currentWaypoint = newWaypoint;
-            }
-            target = null;
-        }
-        if (closestVisibleTarget != null && target != null && type == BehaviorType.Pursuer) {
-            //pursuingPlayer = false;
-            aiDestinationSetter.target = null;
-        }*/
-        
     }
 
     // TODO: Add list/array validation methods for guard clauses to clean up and shorten code
