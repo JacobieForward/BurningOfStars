@@ -14,7 +14,6 @@ public class EnemyAI : MonoBehaviour {
 
     [Range(0, 360)]
     public float firingArc;
-    [SerializeField] bool playerInSight;
     Transform lastKnownTargetTransform;
     AIDestinationSetter aiDestinationSetter;
     [SerializeField] GameObject temporaryWaypoint;
@@ -89,7 +88,7 @@ public class EnemyAI : MonoBehaviour {
 
     // TODO: Add list/array validation methods for guard clauses to clean up and shorten code
     List<GameObject> GetTargetsInRange() {
-        Collider2D[] overlapColliders = Physics2D.OverlapCircleAll(gameObject.transform.position, attackRange, LayerMask.GetMask("Default"), -100000.0f, 100000.0f);
+        Collider2D[] overlapColliders = Physics2D.OverlapCircleAll(gameObject.transform.position, attackRange, LayerMask.GetMask("Actor"), -100000.0f, 100000.0f);
         if (overlapColliders.Length > 0) {
             Collider2D nearestInteractableCollider = overlapColliders[0];
         } else {
@@ -111,7 +110,7 @@ public class EnemyAI : MonoBehaviour {
         }
         foreach (GameObject gameObject in listOfGameObjects) {
             Vector2 heading = gameObject.transform.position - transform.position;
-            RaycastHit2D hit = Physics2D.Raycast(transform.GetChild(0).GetChild(0).position, heading);
+            RaycastHit2D hit = Physics2D.Raycast(transform.GetChild(0).GetChild(0).position, heading, LayerMask.GetMask("Actor"));
             if (hit.collider.gameObject.tag == "Player") {
                 visibleGameObjectsFromList.Add(gameObject);
             }
@@ -147,10 +146,7 @@ public class EnemyAI : MonoBehaviour {
             return;
         }
         if (currentWaypoint == null) {
-            GameObject newWaypoint = Instantiate(temporaryWaypoint, lastKnownTargetTransform.transform.position, lastKnownTargetTransform.transform.rotation);
-            aiDestinationSetter.target = newWaypoint.transform;
-            Destroy(currentWaypoint);
-            currentWaypoint = newWaypoint;
+            SetTargetAtNewWaypoint(lastKnownTargetTransform);
         }
     }
 
@@ -192,5 +188,19 @@ public class EnemyAI : MonoBehaviour {
         angle -= 90.0f;
         Quaternion newRotation = Quaternion.AngleAxis(angle, Vector3.forward);
         transform.rotation = Quaternion.RotateTowards(transform.rotation, newRotation, Time.deltaTime * turnSpeed);
+    }
+
+    public void OnProjectileImpact() {
+        SetTargetAtNewWaypoint(GameObject.Find("Player").transform);
+    }
+
+    void SetTargetAtNewWaypoint(Transform waypointTransform) {
+        if (type != BehaviorType.Pursuer) {
+            return;
+        }
+        GameObject newWaypoint = Instantiate(temporaryWaypoint, waypointTransform.transform.position, waypointTransform.transform.rotation);
+        aiDestinationSetter.target = newWaypoint.transform;
+        Destroy(currentWaypoint);
+        currentWaypoint = newWaypoint;
     }
 }

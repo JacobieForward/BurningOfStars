@@ -126,7 +126,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   type: 2
-  attackRange: 10
+  attackRange: 8
   moveSpeed: 0.5
   turnSpeed: 200
   firingArc: 45

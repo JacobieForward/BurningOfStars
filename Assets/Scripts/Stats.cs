@@ -11,7 +11,6 @@ public class Stats : MonoBehaviour {
     [SerializeField] GameObject healthPickupDrop;
     [Range(0.0f, 1.0f)]
     [SerializeField] float chanceToDropHealthPickup;
-
     [SerializeField] List<GameObject> bodyPieces;
 
     Equipment equipment;
@@ -29,12 +28,17 @@ public class Stats : MonoBehaviour {
 
     public void ProjectileImpact(Projectile projectileHit) {
         currentHealth -= projectileHit.GetDamage();
+        EnemyAI enemyAi = GetComponent<EnemyAI>();
+        if (enemyAi != null) {
+            enemyAi.OnProjectileImpact();
+        }
     }
 
     void Die() {
         if (equipment != null) {
             GameObject droppedWeapon = Instantiate(equipment.GetCurrentWeapon().GetWeaponPickupPrefab(), gameObject.transform.position, gameObject.transform.rotation);
             droppedWeapon.GetComponent<InteractableObject>().SetAmmunition(GetComponent<Equipment>().GetCurrentWeaponAmmunition());
+            droppedWeapon.GetComponent<Rigidbody2D>().velocity = Random.onUnitSphere * Random.Range(1, 5);
         }
         if (deathParticles != null) {
             Instantiate(deathParticles, gameObject.transform.position, gameObject.transform.rotation);
@@ -81,7 +85,8 @@ public class Stats : MonoBehaviour {
         }
         float randomDropNumber = Random.Range(0.0f, 1.0f);
         if (randomDropNumber <= chanceToDropHealthPickup) {
-            Instantiate(healthPickupDrop, transform.position, transform.rotation);
+            GameObject newHealthPickup = Instantiate(healthPickupDrop, transform.position, transform.rotation);
+            newHealthPickup.GetComponent<Rigidbody2D>().velocity = Random.onUnitSphere * Random.Range(1, 3);
         }
     }
 

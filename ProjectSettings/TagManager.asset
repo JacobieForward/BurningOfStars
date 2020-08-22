@@ -19,7 +19,7 @@ TagManager:
   - Obstacle
   - Background
   - Actor
-  - 
+  - Pickup
   - 
   - 
   - 
@@ -49,6 +49,9 @@ TagManager:
     locked: 0
   - name: Pickups
     uniqueID: 2866341679
+    locked: 0
+  - name: Obstacle
+    uniqueID: 3577015691
     locked: 0
   - name: Actors
     uniqueID: 1079028991

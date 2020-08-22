@@ -9,11 +9,12 @@ public class InteractableObject : MonoBehaviour {
     // For now lazy enum method
     [SerializeField] InteractableType type;
     [SerializeField] Weapon weapon;
-
     [SerializeField] int ammunition;
+    [SerializeField] float healthGained;
 
     enum InteractableType {
         WeaponPickup,
+        HealthPickup,
         Door
     }
 
@@ -39,6 +40,10 @@ public class InteractableObject : MonoBehaviour {
             }
             playerEquipmentScript.EquipWeapon(weapon);
             playerEquipmentScript.SetCurrentWeaponAmmunition(ammunition);
+        }
+        if (type == InteractableType.HealthPickup) {
+            GameObject.FindWithTag("Player").GetComponent<Stats>().GainHealth(healthGained);
+            Destroy(gameObject);
         } else if(type == InteractableType.Door) {
 
         }
