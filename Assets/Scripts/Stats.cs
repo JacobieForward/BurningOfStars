@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 #pragma warning disable CS0649
 public class Stats : MonoBehaviour {
@@ -35,6 +36,9 @@ public class Stats : MonoBehaviour {
     }
 
     void Die() {
+        if (gameObject.tag == "Player") {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
         if (equipment != null) {
             GameObject droppedWeapon = Instantiate(equipment.GetCurrentWeapon().GetWeaponPickupPrefab(), gameObject.transform.position, gameObject.transform.rotation);
             droppedWeapon.GetComponent<InteractableObject>().SetAmmunition(GetComponent<Equipment>().GetCurrentWeaponAmmunition());

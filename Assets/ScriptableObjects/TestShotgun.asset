@@ -16,7 +16,7 @@ MonoBehaviour:
   projectile: {fileID: 7298414797811577141, guid: 66b00524689da24418f958401054554c,
     type: 3}
   fireRate: 2
-  spread: 0
+  spread: 20
   numberSpawned: 15
   maxAmmunition: 15
   weaponPickupPrefab: {fileID: 433957337335838075, guid: 7c65f0fc379313044b44cefac886a896,
