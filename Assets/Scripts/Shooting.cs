@@ -30,7 +30,9 @@ public class Shooting : MonoBehaviour {
             projectileInstance.transform.Rotate(0.0f, 0.0f, 90.0f + Random.Range(-equipment.GetCurrentWeapon().GetSpread(), equipment.GetCurrentWeapon().GetSpread()));
             Physics2D.IgnoreCollision(projectileInstance.GetComponent<Collider2D>(), GetComponent<Collider2D>());
         }
-        equipment.UseAmmunition();
+        if (gameObject.tag == "Player") { // TODO: In cleanup just make enemies not use weapons instances possibly instead of this check to make sure only the player does
+            equipment.UseAmmunition();
+        }
         fireTimer = 0.0f;
     }
 }

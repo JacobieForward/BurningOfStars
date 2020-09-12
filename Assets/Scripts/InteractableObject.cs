@@ -53,6 +53,7 @@ public class InteractableObject : MonoBehaviour {
         Equipment playerEquipmentScript = GameObject.FindWithTag("Player").GetComponent<Equipment>();
         GameObject newPickup = Instantiate(weaponToSwapWith.GetWeaponPickupPrefab(), gameObject.transform.position, gameObject.transform.rotation);
         newPickup.GetComponent<InteractableObject>().SetAmmunition(playerEquipmentScript.GetCurrentWeaponAmmunition());
+        newPickup.GetComponent<Rigidbody2D>().velocity = Random.onUnitSphere * Random.Range(1, 2);
         Destroy(gameObject);
     }
 

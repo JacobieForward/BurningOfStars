@@ -41,7 +41,8 @@ public class Stats : MonoBehaviour {
         }
         if (equipment != null) {
             GameObject droppedWeapon = Instantiate(equipment.GetCurrentWeapon().GetWeaponPickupPrefab(), gameObject.transform.position, gameObject.transform.rotation);
-            droppedWeapon.GetComponent<InteractableObject>().SetAmmunition(GetComponent<Equipment>().GetCurrentWeaponAmmunition());
+            // TODO: Remove enemies using ammunition on weaponInstance? Randomize Ammo left?
+            //droppedWeapon.GetComponent<InteractableObject>().SetAmmunition(GetComponent<Equipment>().GetCurrentWeaponAmmunition());
             droppedWeapon.GetComponent<Rigidbody2D>().velocity = Random.onUnitSphere * Random.Range(1, 5);
         }
         if (deathParticles != null) {

@@ -82,6 +82,10 @@ public class Equipment : MonoBehaviour {
         return currentWeaponAmmunition;
     }
 
+    public int GetOffhandWeaponAmmunition() {
+        return offhandWeaponAmmunition;
+    }
+
     public void SetCurrentWeaponAmmunition(int newWeaponAmmunition) {
         currentWeaponAmmunition = newWeaponAmmunition;
     }

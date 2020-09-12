@@ -11,6 +11,10 @@ public class PlayerHUD : MonoBehaviour {
 
     Slider playerHealthBar;
     Text playerAmmunitionCounter;
+    Text playerOffhandAmmunitionCounter;
+
+    Image currentWeaponImage;
+    Image offhandWeaponImage;
 
     void Awake() {
         playerStats = GameObject.FindGameObjectWithTag("Player").GetComponent<Stats>();
@@ -18,6 +22,10 @@ public class PlayerHUD : MonoBehaviour {
 
         playerHealthBar = GameObject.Find("HealthBar").GetComponent<Slider>();
         playerAmmunitionCounter = GameObject.Find("CurrentWeaponAmmunitionText").GetComponent<Text>();
+        playerOffhandAmmunitionCounter = GameObject.Find("OffhandWeaponAmmunitionText").GetComponent<Text>();
+
+        currentWeaponImage = GameObject.Find("CurrentWeaponImage").GetComponent<Image>();
+        offhandWeaponImage = GameObject.Find("OffhandWeaponImage").GetComponent<Image>();
     }
 
     void Update() {
@@ -25,6 +33,10 @@ public class PlayerHUD : MonoBehaviour {
             playerHealthBar.maxValue = playerStats.GetMaxHealth();
             playerHealthBar.value = playerStats.GetCurrentHealth();
             playerAmmunitionCounter.text = playerEquipment.GetCurrentWeaponAmmunition().ToString();
+            playerOffhandAmmunitionCounter.text = playerEquipment.GetOffhandWeaponAmmunition().ToString();
+            currentWeaponImage.sprite = playerEquipment.GetCurrentWeapon().GetSideViewSprite();
+            offhandWeaponImage.sprite = playerEquipment.GetOffHandWeapon().GetSideViewSprite();
+
             // TODO: Get rid of all this dirty try catching and just attach a script to the health bars to set their gameObject names automatically?
             // Then again how would we know the script was always attached?
         } catch (NullReferenceException) {

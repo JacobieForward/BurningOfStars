@@ -3384,8 +3384,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea37f0ce3f3772a4a80df8f8133f2346, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentWeapon: {fileID: 11400000, guid: aa4a7130192eb13429e41253a9a5d5cd, type: 2}
-  offhandWeapon: {fileID: 11400000, guid: 9133f34357165764ca5ab76f592e0ed9, type: 2}
+  currentWeapon: {fileID: 11400000, guid: b98e2c3276f216a4a88a57473a8b7645, type: 2}
+  offhandWeapon: {fileID: 0}
   currentWeaponAmmunition: 0
   offhandWeaponAmmunition: 0
 --- !u!114 &6998942013894062191

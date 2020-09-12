@@ -170,8 +170,9 @@ public class EnemyAI : MonoBehaviour {
 
     bool CheckIfTargetInFiringArc() {
         Vector3 dirToTarget = transform.position - target.transform.position;
-        // -90 due to needing the object to point at and fire at the y (green) axis
-        if (Mathf.Abs((Vector2.Angle(transform.right, dirToTarget) - 90)) < Mathf.Abs(firingArc / 2)) {
+        // Somehow -transform.up = green axis
+        float angle = Mathf.Abs(Vector2.Angle(-transform.up, dirToTarget));
+        if (angle < firingArc) {
             return true;
         }
         return false;

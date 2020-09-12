@@ -41,4 +41,8 @@ public class Weapon : ScriptableObject {
     public int GetMaxAmmunition() {
         return maxAmmunition;
     }
+
+    public Sprite GetSideViewSprite() {
+        return weaponPickupPrefab.gameObject.GetComponent<SpriteRenderer>().sprite;
+    }
 }
